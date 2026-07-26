@@ -1,0 +1,1114 @@
+/* =========================================================
+   TOKENS
+========================================================= */
+:root {
+    --crimson-deepest: #3a040f;
+    --crimson-deep: #5c0916;
+    --crimson: #7a0f22;
+    --crimson-light: #9a1c30;
+
+    --cream: #fbf3e4;
+    --cream-dark: #f1e3c6;
+    --paper-shadow: rgba(58, 4, 15, 0.25);
+
+    --gold: #d4af37;
+    --gold-bright: #f1d989;
+    --gold-dim: #a9822a;
+
+    --ink: #2c1508;
+    --ink-soft: #5a3620;
+
+    --font-display: "Cinzel Decorative", "Cinzel", serif;
+    --font-heading: "Cinzel", serif;
+    --font-body: "Playfair Display", serif;
+    --font-devanagari: "Noto Serif Devanagari", serif;
+    --font-utility: "Poppins", sans-serif;
+
+    --radius-card: 4px;
+    --shadow-card: 0 20px 45px -15px rgba(0, 0, 0, 0.55);
+}
+
+/* =========================================================
+   RESET & BASE
+========================================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--crimson-deep);
+    color: var(--ink);
+    overflow-x: hidden;
+    position: relative;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+::selection {
+    background: var(--gold);
+    color: var(--crimson-deepest);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--gold-bright);
+    outline-offset: 3px;
+}
+
+/* =========================================================
+   FIXED BACKGROUND VIDEO
+========================================================= */
+.bg-video-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    background: var(--crimson-deep);
+}
+
+.bg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bg-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+            rgba(58, 4, 15, 0.95) 0%,
+            rgba(92, 9, 22, 0.93) 40%,
+            rgba(58, 4, 15, 0.96) 100%);
+    z-index: -1;
+}
+
+/* =========================================================
+   SHARED SECTION FRAME
+========================================================= */
+.section {
+    position: relative;
+    padding: 5.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 4.5vw, 2.6rem);
+    letter-spacing: 0.03em;
+    margin-bottom: 0.6rem;
+}
+
+.section-subtitle {
+    font-family: var(--font-utility);
+    font-weight: 300;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 3rem;
+}
+
+/* =========================================================
+   SCROLL-TRIGGERED FADE-IN
+========================================================= */
+.fade-section {
+    opacity: 0;
+    transform: translateY(48px);
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.fade-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================================================
+   GLASSMORPHISM PANELS
+========================================================= */
+.glass-panel {
+    position: relative;
+    border: 1.5px solid var(--gold);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-panel::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 1px solid rgba(212, 175, 55, 0.55);
+    pointer-events: none;
+}
+
+.glass-panel--light {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.glass-panel--dark {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel--dark .section-detail,
+.glass-panel--dark.event-card .event-detail,
+.glass-panel--dark .countdown-label {
+    color: var(--cream-dark);
+}
+
+/* =========================================================
+   PETAL LAYER (global, fixed, runs the whole session)
+========================================================= */
+.petal-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 40;
+    overflow: hidden;
+}
+
+.petal {
+    position: absolute;
+    top: -5vh;
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle at 30% 30%, #ffd7e0, #e8577c 70%, #b23a56);
+    border-radius: 0% 70% 0% 70%;
+    opacity: 0.9;
+    animation: petal-fall linear forwards;
+    will-change: transform, opacity;
+}
+
+@keyframes petal-fall {
+    0% {
+        transform: translateY(-10vh) translateX(0) rotate(0deg);
+        opacity: 0.95;
+    }
+
+    100% {
+        transform: translateY(115vh) translateX(var(--drift, 60px)) rotate(540deg);
+        opacity: 0.15;
+    }
+}
+
+/* =========================================================
+   FLOATING MUSIC TOGGLE
+========================================================= */
+.music-toggle {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 200;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    background: radial-gradient(circle at 35% 30%, var(--crimson-light), var(--crimson-deep) 70%);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), inset 0 0 0 2px rgba(212, 175, 55, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.music-toggle:hover {
+    transform: scale(1.07);
+}
+
+.music-toggle-icon {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--gold-bright);
+    transition: opacity 0.2s ease;
+}
+
+.music-toggle.is-playing {
+    animation: music-glow 2.4s ease-in-out infinite;
+}
+
+.music-toggle:not(.is-playing) .music-toggle-icon {
+    opacity: 0.45;
+}
+
+@keyframes music-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), inset 0 0 0 2px rgba(212, 175, 55, 0.35), 0 0 0 0 rgba(212, 175, 55, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55), inset 0 0 0 2px rgba(212, 175, 55, 0.45), 0 0 0 9px rgba(212, 175, 55, 0);
+    }
+}
+
+/* =========================================================
+   ENVELOPE COVER SCREEN
+========================================================= */
+.envelope-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    background:
+        radial-gradient(ellipse at 50% 20%, var(--crimson) 0%, var(--crimson-deep) 55%, var(--crimson-deepest) 100%);
+    overflow: hidden;
+    transition: opacity 0.9s ease, transform 0.9s ease, visibility 0.9s ease;
+}
+
+.envelope-screen.is-hidden {
+    opacity: 0;
+    transform: scale(1.04);
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.envelope-stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1.5px 1.5px at 20% 30%, rgba(212, 175, 55, 0.55), transparent),
+        radial-gradient(1.5px 1.5px at 70% 60%, rgba(212, 175, 55, 0.4), transparent),
+        radial-gradient(1px 1px at 40% 80%, rgba(212, 175, 55, 0.5), transparent),
+        radial-gradient(1px 1px at 85% 15%, rgba(212, 175, 55, 0.45), transparent),
+        radial-gradient(1.5px 1.5px at 55% 40%, rgba(212, 175, 55, 0.35), transparent);
+    background-size: 100% 100%;
+    opacity: 0.8;
+    animation: twinkle 5s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.55;
+    }
+
+    50% {
+        opacity: 0.95;
+    }
+}
+
+/* thin ornamental frame across the top and bottom of the cover screen */
+.cover-frame {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 2;
+}
+
+.cover-frame-top {
+    top: 5%;
+}
+
+.cover-frame-bottom {
+    bottom: 5%;
+}
+
+.cover-frame span:not(.cover-frame-motif) {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+    opacity: 0.7;
+}
+
+.cover-frame-motif {
+    color: var(--gold);
+    font-size: 1.1rem;
+    opacity: 0.85;
+}
+
+/* --- envelope now fills the entire screen edge-to-edge, so there's
+   no crimson gutter visible on wide screens --- */
+.envelope-wrap {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    /* real visible height on mobile, ignoring the address bar */
+    perspective: 2000px;
+    z-index: 0;
+}
+
+.envelope-3d {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* the envelope photo/graphic — drop your own image in as
+   images/envelope.jpg. On wide screens it fills edge-to-edge
+   (object-fit: cover). On tall/narrow screens (most phones held
+   upright) the photo's own 3:2 shape is much wider than the screen,
+   so `cover` would crop away almost all of it — the media query
+   below switches to `contain` there instead, showing the full
+   envelope with a little breathing room top and bottom rather than
+   slicing off its edges. script.js reads whichever mode is active
+   and keeps the seal + text locked to the same spot either way. */
+.envelope-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.4));
+    transform-origin: 50% 50%;
+    transform: rotateX(0deg) scale(1);
+    transition: transform 1s cubic-bezier(0.6, 0.05, 0.15, 1), filter 1s ease;
+    z-index: 1;
+}
+
+@media (max-aspect-ratio: 3/2) {
+    .envelope-image {
+        object-fit: contain;
+    }
+}
+
+/* wax seal — your envelope.jpg already shows a printed/embossed
+   seal, so this button is completely invisible; it's just an
+   accessible, correctly-sized tap target sitting exactly on top of
+   that printed seal. Sized as a % of the envelope so it scales
+   perfectly with the image at any screen size.
+   If your seal isn't perfectly centered/at 57% down in your photo,
+   nudge the `top` value below to match. */
+.wax-seal {
+    position: absolute;
+    top: 57%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 13%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.envelope-hint {
+    font-family: var(--font-utility);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cream-dark);
+    opacity: 0.75;
+}
+
+/* text printed directly on the envelope face, positioned in the
+   plain cream margins of the photo (top edge and bottom edge) so it
+   doesn't collide with the printed florals/seal artwork */
+.envelope-title-text {
+    position: absolute;
+    top: 24%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 3.6vw, 1.7rem);
+    letter-spacing: 0.1em;
+    color: #b9862c;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 1px 4px rgba(58, 4, 15, 0.25);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.envelope-tap-text {
+    position: absolute;
+    top: 79%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    font-family: var(--font-utility);
+    font-weight: 500;
+    font-size: clamp(0.62rem, 1.8vw, 0.78rem);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6b4a18;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.65);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* --- open state: the envelope lifts and brightens slightly, the
+   seal fades, and the whole cover screen (handled in JS) dissolves
+   as one unit — nothing pops out separately, so there is no
+   mid-transition glitch --- */
+.envelope-3d.is-open .envelope-image {
+    transform: rotateX(6deg) scale(1.04);
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.45)) brightness(1.06);
+}
+
+.envelope-3d.is-open .wax-seal {
+    pointer-events: none;
+}
+
+.envelope-3d.is-open .envelope-title-text,
+.envelope-3d.is-open .envelope-tap-text {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* =========================================================
+   MAIN INVITATION WRAPPER
+========================================================= */
+.invitation {
+    position: relative;
+}
+
+/* section backdrops are semi-transparent so the fixed video
+   subtly shows through behind every panel */
+.devotional {
+    background: linear-gradient(180deg,
+            rgba(122, 15, 34, 0.92) 0%,
+            rgba(92, 9, 22, 0.94) 60%);
+    color: var(--gold-bright);
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+}
+
+.ornament {
+    font-size: 1.6rem;
+    color: var(--gold);
+    opacity: 0.8;
+    margin: 0 auto 1.2rem;
+}
+
+.ornament-bottom {
+    margin-top: 1.4rem;
+    margin-bottom: 0;
+}
+
+.devotional-invocation {
+    font-family: var(--font-devanagari);
+    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+    color: var(--gold-bright);
+    margin-bottom: 1.6rem;
+    letter-spacing: 0.03em;
+}
+
+.devotional-shloka {
+    font-family: var(--font-devanagari);
+    font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+    line-height: 2;
+    color: var(--gold);
+    max-width: 640px;
+}
+
+.devotional-translation {
+    margin-top: 1.6rem;
+    max-width: 520px;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--cream-dark);
+    opacity: 0.85;
+    line-height: 1.7;
+}
+
+/* =========================================================
+   HERO SECTION
+========================================================= */
+.hero {
+    background: rgba(251, 243, 228, 0.9);
+    padding: 4.5rem 1.2rem;
+}
+
+.hero-frame {
+    max-width: 620px;
+    width: 100%;
+    padding: 3rem 2rem;
+}
+
+.hero-kicker {
+    font-family: var(--font-utility);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 1rem;
+}
+
+.hero-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 1.4rem;
+}
+
+.hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 7vw, 3.1rem);
+    color: var(--crimson);
+}
+
+.hero-and {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--gold-dim);
+}
+
+.hero-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin: 0.6rem auto 1.6rem;
+    width: 70%;
+}
+
+.hero-divider span:not(.hero-divider-motif) {
+    flex: 1;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.6;
+}
+
+.hero-divider-motif {
+    color: var(--gold-dim);
+    font-size: 1rem;
+    transform: rotate(45deg);
+}
+
+.hero-parents {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.hero-parents strong {
+    font-family: var(--font-heading);
+    color: var(--crimson);
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+}
+
+.hero-blessing {
+    margin-top: 1.6rem;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.85;
+    color: var(--ink);
+}
+
+/* =========================================================
+   SCRATCH CARD
+========================================================= */
+.scratch-section {
+    background: rgba(251, 243, 228, 0.9);
+    padding-top: 4.5rem;
+}
+
+.scratch-card-frame {
+    padding: 10px;
+}
+
+.scratch-card {
+    position: relative;
+    width: min(360px, 80vw);
+    height: min(220px, 48vw);
+    overflow: hidden;
+    background: var(--crimson-deep);
+}
+
+.scratch-reveal-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: clamp(1.1rem, 3.4vw, 1.5rem);
+    line-height: 1.7;
+    color: var(--gold-bright);
+    background: radial-gradient(ellipse at center, var(--crimson) 0%, var(--crimson-deepest) 100%);
+    text-align: center;
+}
+
+.scratch-reveal-text span {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.8em;
+    color: var(--cream-dark);
+    margin-top: 0.3rem;
+}
+
+#scratchCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: pointer;
+}
+
+.scratch-hint {
+    margin-top: 1.4rem;
+    font-family: var(--font-utility);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   COUNTDOWN
+========================================================= */
+.countdown-section {
+    background: linear-gradient(180deg,
+            rgba(122, 15, 34, 0.92) 0%,
+            rgba(92, 9, 22, 0.94) 65%);
+    color: var(--cream);
+}
+
+.countdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+}
+
+.countdown-unit {
+    min-width: 88px;
+    padding: 1.4rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.countdown-value {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    color: var(--gold-bright);
+    font-variant-numeric: tabular-nums;
+}
+
+.countdown-label {
+    font-family: var(--font-utility);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cream-dark);
+    opacity: 0.85;
+}
+
+/* =========================================================
+   EVENTS TIMELINE
+========================================================= */
+.events-section {
+    background: linear-gradient(180deg,
+            rgba(122, 15, 34, 0.92) 0%,
+            rgba(92, 9, 22, 0.94) 60%);
+    color: var(--cream);
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 2.4rem;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.event-card {
+    padding: 1.6rem 1.3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--cream);
+}
+
+.event-number {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--crimson-deepest);
+    color: var(--gold-bright);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--gold);
+}
+
+.event-image-frame {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+    margin-bottom: 1.2rem;
+    background: var(--cream-dark);
+}
+
+.event-image-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.6s ease;
+}
+
+.event-card:hover .event-image-frame img {
+    transform: scale(1.08);
+}
+
+.event-name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--gold-bright);
+    margin-bottom: 0.5rem;
+}
+
+.event-detail {
+    font-family: var(--font-utility);
+    font-size: 0.85rem;
+    color: var(--cream-dark);
+    line-height: 1.6;
+}
+
+/* =========================================================
+   GALLERY
+========================================================= */
+.gallery-section {
+    background: rgba(251, 243, 228, 0.9);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.4rem;
+    max-width: 900px;
+    width: 100%;
+}
+
+.gallery-frame {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 0 4px var(--cream), 0 0 0 5px var(--gold-dim), var(--shadow-card);
+    background: var(--cream-dark);
+}
+
+.gallery-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.gallery-frame:hover img {
+    transform: scale(1.1);
+}
+
+/* =========================================================
+   VIDEO
+========================================================= */
+.video-section {
+    background: linear-gradient(180deg,
+            rgba(122, 15, 34, 0.92) 0%,
+            rgba(92, 9, 22, 0.94) 65%);
+    color: var(--cream);
+}
+
+.video-frame {
+    width: 100%;
+    max-width: 820px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    padding: 8px;
+}
+
+.video-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* =========================================================
+   VENUE MAP
+========================================================= */
+.venue-section {
+    background: rgba(251, 243, 228, 0.9);
+}
+
+.map-frame {
+    width: 100%;
+    max-width: 700px;
+    overflow: hidden;
+    line-height: 0;
+    padding: 8px;
+}
+
+.map-frame iframe {
+    width: 100%;
+    height: 380px;
+    border: none;
+    display: block;
+}
+
+/* =========================================================
+   RSVP
+========================================================= */
+.rsvp-section {
+    background: linear-gradient(180deg,
+            rgba(122, 15, 34, 0.92) 0%,
+            rgba(92, 9, 22, 0.94) 60%);
+    color: var(--cream);
+}
+
+.rsvp-form {
+    width: 100%;
+    max-width: 460px;
+    padding: 2.4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    text-align: left;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border: none;
+}
+
+.form-field label,
+.attendance-field legend {
+    font-family: var(--font-utility);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+}
+
+.form-field input[type="text"],
+.form-field input[type="number"],
+.form-field textarea {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    padding: 0.7rem 0.85rem;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--gold-dim);
+    color: var(--ink);
+    resize: vertical;
+}
+
+.attendance-options {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.attendance-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    color: var(--cream);
+    cursor: pointer;
+}
+
+.attendance-option input {
+    accent-color: var(--gold);
+}
+
+.rsvp-submit {
+    margin-top: 0.6rem;
+    padding: 0.9rem 1.5rem;
+    background: var(--crimson-deepest);
+    color: var(--gold-bright);
+    border: 1px solid var(--gold);
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.rsvp-submit:hover {
+    background: var(--crimson);
+    transform: translateY(-2px);
+}
+
+.rsvp-confirmation {
+    min-height: 1.2rem;
+    font-family: var(--font-utility);
+    font-size: 0.85rem;
+    color: var(--gold-bright);
+    text-align: center;
+}
+
+.rsvp-confirmation.is-visible {
+    animation: fade-in-up 0.5s ease forwards;
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================
+   THANK YOU
+========================================================= */
+.thankyou-section {
+    background: radial-gradient(ellipse at center,
+            rgba(122, 15, 34, 0.92) 0%,
+            rgba(58, 4, 15, 0.95) 75%);
+    color: var(--cream);
+    padding: 6rem 1.5rem;
+}
+
+.thankyou-frame {
+    max-width: 560px;
+    padding: 3rem 2rem;
+}
+
+.thankyou-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 6vw, 3rem);
+    color: var(--gold-bright);
+    margin-bottom: 1.4rem;
+}
+
+.thankyou-text {
+    font-family: var(--font-body);
+    font-style: italic;
+    line-height: 1.85;
+    color: var(--cream-dark);
+    margin-bottom: 1.8rem;
+}
+
+.thankyou-signature {
+    font-family: var(--font-heading);
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    line-height: 1.7;
+}
+
+/* =========================================================
+   FOOTER CREDIT
+========================================================= */
+.site-footer {
+    position: relative;
+    padding: 1.4rem 1rem;
+    text-align: center;
+    background: var(--crimson-deepest);
+}
+
+.site-footer p {
+    font-family: var(--font-utility);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: rgba(241, 217, 137, 0.55);
+}
+
+.site-footer span {
+    color: var(--gold);
+    font-weight: 500;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (max-width: 640px) {
+    .section {
+        padding: 3.6rem 1rem;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .countdown {
+        gap: 0.7rem;
+    }
+
+    .countdown-unit {
+        min-width: 72px;
+        padding: 1rem 0.5rem;
+    }
+
+    .hero-frame,
+    .rsvp-form,
+    .thankyou-frame {
+        padding: 2rem 1.3rem;
+    }
+
+    .music-toggle {
+        width: 48px;
+        height: 48px;
+        bottom: 16px;
+        right: 16px;
+    }
+}
+
+@media (max-width: 420px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.9rem;
+    }
+}
+
+@media (max-height: 620px) {
+    .cover-frame {
+        display: none;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
