@@ -213,8 +213,8 @@ function initCountdown() {
 
   if (!daysEl) return;
 
-  // 26 November 2026, 11:11 AM — Shubh Muhurt
-  const weddingDate = new Date("2026-11-26T11:11:00");
+  // 26 November 2026, 10:21 AM — Shubh Muhurt
+  const weddingDate = new Date("2026-11-26T10:21:00");
 
   function pad(num) {
     return String(Math.max(num, 0)).padStart(2, "0");
